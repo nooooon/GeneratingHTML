@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Generating HTML</title>
+</head>
+<body>
+  <form method="post" action="http://local.centos7.app/api" id="postform">
+    <div class="">
+      Name:
+    <input type="text" name="name" id="name">
+    </div>
+    <div class="">
+      Image:
+      <input type="file" name="image" id="photo" src="" alt="">
+    </div>
+
+    <input type="submit" name="" value="send">
+  </form>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script>
+    (function(){
+      $("#postform").submit(
+        function(e){
+          e.preventDefault();
+
+          var $form = $(this);
+
+          var JsonData = {
+            name: $("#name").val(),
+            photo: $("#photo").val()
+          }
+          console.log(JSON.stringify(JsonData))
+
+          $.ajax({
+            url: $form.attr('action'),
+            type: 'post',
+            contentType: 'application/JSON',
+            data: JSON.stringify(JsonData),
+            dataType: 'html',
+            scriptCharset: 'utf-8',
+            timeout: 10000,
+            success: function(data){
+              $form[0].reset();
+              console.log(data);
+            },
+            error: function(xhr, textStatus, error){
+              console.log(xhr, textStatus, error);
+            }
+          });
+        }
+      );
+    })();
+  </script>
+</body>
+</html>

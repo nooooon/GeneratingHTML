@@ -6,6 +6,7 @@ import sys
 import io
 import falcon
 import json
+import base64
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 # sys.stdin = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
@@ -65,12 +66,16 @@ class Resource(object):
 
 
     msg = {'title': 'api test', 'name': reqName, 'photo': reqPhoto}
-
+    #self.convertBase64StringToFile(reqPhoto, './output/photo.png');
     self.createOutputFile(msg)
 
     resp.body = json.dumps(msg)
 
-
+  """
+  def convertBase64StringToFile(self, base64data, path):
+    with open(path, 'wb') as f
+      f.write(base64.b64decode(base64data))
+  """
 
   def createOutputFile(self, tmpValue):
     tmp = open('template.html').read()
@@ -83,6 +88,7 @@ class Resource(object):
 
     with open(OUTPUT_DIR + '/' + OUTPUT_FILE, 'w', encoding='utf-8') as f:
       f.write(tmp.format(**tmpValue))
+
 
 
 app = falcon.API()

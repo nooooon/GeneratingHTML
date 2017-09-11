@@ -13,6 +13,7 @@
     <div class="">
       Image:
       <input type="file" name="image" id="photo" src="" alt="">
+      <div class="preview"></div>
     </div>
 
     <input type="submit" name="" value="send">
@@ -21,17 +22,47 @@
   <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script>
     (function(){
+      var postImage;
+
+      $("#postform").on('change', 'input[type="file"]', function(e){
+        var file = e.target.files[0];
+
+        if(file.type.indexOf("image") < 0){
+          return false;
+        }
+
+        var filereader = new FileReader();
+        var $preview = $(".preview");
+        filereader.onload = (function(file){
+          return function(e) {
+            $preview.empty();
+            postImage = e.target.result;
+            $preview.append($('<img>').attr({
+              src: e.target.result,
+              width: "150px",
+              class: "preview",
+              title: file.name
+            }));
+          };
+        })(file);
+
+        filereader.readAsDataURL(file);
+      })
+
       $("#postform").submit(
         function(e){
           e.preventDefault();
+
+          postName = $("#name").val();
+          if(!postName) return;
+          if(!postImage) return;
 
           var $form = $(this);
 
           var JsonData = {
             name: $("#name").val(),
-            photo: $("#photo").val()
+            photo: postImage
           }
-          console.log(JSON.stringify(JsonData))
 
           $.ajax({
             url: $form.attr('action'),
